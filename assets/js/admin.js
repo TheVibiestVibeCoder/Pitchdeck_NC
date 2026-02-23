@@ -1,6 +1,9 @@
 import { fetchDeck, getAuthStatus, login, logout, saveDeck } from "./shared/api.js";
 import {
   SIZE_CLASS_MAP,
+  THEME_CLASS_MAP,
+  BLOCK_STYLE_CLASS_MAP,
+  BLOCK_TONE_CLASS_MAP,
   createDefaultDeck,
   normalizeDeck,
   uid,
@@ -19,11 +22,14 @@ const refs = {
   saveDeckBtn: document.getElementById("saveDeckBtn"),
   logoutBtn: document.getElementById("logoutBtn"),
   addSlideBtn: document.getElementById("addSlideBtn"),
+  duplicateSlideBtn: document.getElementById("duplicateSlideBtn"),
+  deleteSlideBtn: document.getElementById("deleteSlideBtn"),
   addBlockBtn: document.getElementById("addBlockBtn"),
   deleteBlockBtn: document.getElementById("deleteBlockBtn"),
   resetDeckBtn: document.getElementById("resetDeckBtn"),
   slideSelect: document.getElementById("slideSelect"),
   slideTitle: document.getElementById("slideTitle"),
+  slideTheme: document.getElementById("slideTheme"),
   blockList: document.getElementById("blockList"),
   blockForm: document.getElementById("blockForm"),
   blockText: document.getElementById("blockText"),
@@ -33,6 +39,8 @@ const refs = {
   blockH: document.getElementById("blockH"),
   blockAlign: document.getElementById("blockAlign"),
   blockSize: document.getElementById("blockSize"),
+  blockStyle: document.getElementById("blockStyle"),
+  blockTone: document.getElementById("blockTone"),
   adminStatus: document.getElementById("adminStatus"),
   deck: document.getElementById("deckScroll"),
   progress: document.getElementById("slideProgress")
@@ -62,12 +70,15 @@ function bindEvents() {
 
   refs.saveDeckBtn.addEventListener("click", saveDeckChanges);
   refs.addSlideBtn.addEventListener("click", addSlide);
+  refs.duplicateSlideBtn.addEventListener("click", duplicateSlide);
+  refs.deleteSlideBtn.addEventListener("click", deleteSlide);
   refs.addBlockBtn.addEventListener("click", addBlock);
   refs.deleteBlockBtn.addEventListener("click", deleteBlock);
   refs.resetDeckBtn.addEventListener("click", resetDeck);
 
   refs.slideSelect.addEventListener("change", onSlideSelectChange);
   refs.slideTitle.addEventListener("input", onSlideTitleInput);
+  refs.slideTheme.addEventListener("change", onSlideThemeChange);
   refs.blockList.addEventListener("click", onBlockListClick);
   refs.blockForm.addEventListener("input", onBlockInput);
 
@@ -257,9 +268,10 @@ function renderDeck(preserveScroll = true) {
     shell.dataset.slideId = slide.id;
 
     const canvas = document.createElement("article");
-    canvas.className = "slide-canvas";
+    canvas.className = `slide-canvas ${
+      THEME_CLASS_MAP[slide.theme] || THEME_CLASS_MAP.obsidian
+    }`;
     canvas.innerHTML = `
-      <div class="slide-grid"></div>
       <div class="slide-meta">
         <div>
           <p class="text-label">Slide ${String(index + 1).padStart(2, "0")}</p>
@@ -287,7 +299,10 @@ function renderDeck(preserveScroll = true) {
 
 function buildBlockElement(slideId, block, index) {
   const el = document.createElement("div");
-  el.className = `slide-block ${SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body}`;
+  const sizeClass = SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body;
+  const styleClass = BLOCK_STYLE_CLASS_MAP[block.style] || BLOCK_STYLE_CLASS_MAP.glass;
+  const toneClass = BLOCK_TONE_CLASS_MAP[block.tone] || BLOCK_TONE_CLASS_MAP.default;
+  el.className = `slide-block ${sizeClass} ${styleClass} ${toneClass}`;
   el.dataset.slideId = slideId;
   el.dataset.blockId = block.id;
   el.style.setProperty("--i", String(index));
@@ -389,7 +404,11 @@ function syncFormFields() {
   const disabled = !slide || !block;
 
   refs.slideTitle.value = slide?.title || "";
+  refs.slideTheme.value = slide?.theme || "obsidian";
   refs.deleteBlockBtn.disabled = disabled;
+  refs.duplicateSlideBtn.disabled = !slide;
+  refs.deleteSlideBtn.disabled = !slide || state.deck.slides.length <= 1;
+  refs.slideTheme.disabled = !slide;
 
   [
     refs.blockText,
@@ -398,7 +417,9 @@ function syncFormFields() {
     refs.blockW,
     refs.blockH,
     refs.blockAlign,
-    refs.blockSize
+    refs.blockSize,
+    refs.blockStyle,
+    refs.blockTone
   ].forEach((field) => {
     field.disabled = disabled;
   });
@@ -411,6 +432,8 @@ function syncFormFields() {
     refs.blockH.value = "";
     refs.blockAlign.value = "left";
     refs.blockSize.value = "body";
+    refs.blockStyle.value = "glass";
+    refs.blockTone.value = "default";
     return;
   }
 
@@ -421,6 +444,8 @@ function syncFormFields() {
   refs.blockH.value = String(block.h);
   refs.blockAlign.value = block.align;
   refs.blockSize.value = block.size;
+  refs.blockStyle.value = block.style;
+  refs.blockTone.value = block.tone;
 }
 
 function syncSelection() {
@@ -453,6 +478,21 @@ function onSlideTitleInput() {
   markDirty();
 }
 
+function onSlideThemeChange() {
+  const slide = currentSlide();
+  if (!slide) return;
+  slide.theme = refs.slideTheme.value;
+
+  const canvas = refs.deck.querySelector(`.slide-shell[data-slide-id="${slide.id}"] .slide-canvas`);
+  if (canvas) {
+    canvas.className = `slide-canvas ${
+      THEME_CLASS_MAP[slide.theme] || THEME_CLASS_MAP.obsidian
+    }`;
+  }
+
+  markDirty();
+}
+
 function onBlockListClick(event) {
   const item = event.target.closest("[data-block-id]");
   if (!item) return;
@@ -473,6 +513,8 @@ function onBlockInput() {
   block.y = clamp(num(refs.blockY.value, block.y), 0, 100 - block.h);
   block.align = refs.blockAlign.value;
   block.size = refs.blockSize.value;
+  block.style = refs.blockStyle.value;
+  block.tone = refs.blockTone.value;
 
   refs.blockX.value = String(block.x);
   refs.blockY.value = String(block.y);
@@ -481,7 +523,10 @@ function onBlockInput() {
 
   const previewEl = blockElement(state.selectedSlideId, state.selectedBlockId);
   if (previewEl) {
-    previewEl.className = `slide-block ${SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body} is-selected`;
+    const sizeClass = SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body;
+    const styleClass = BLOCK_STYLE_CLASS_MAP[block.style] || BLOCK_STYLE_CLASS_MAP.glass;
+    const toneClass = BLOCK_TONE_CLASS_MAP[block.tone] || BLOCK_TONE_CLASS_MAP.default;
+    previewEl.className = `slide-block ${sizeClass} ${styleClass} ${toneClass} is-selected`;
     applyBlockStyle(previewEl, block);
     const textNode = previewEl.querySelector(".slide-block__text");
     if (textNode) textNode.textContent = block.text;
@@ -503,6 +548,7 @@ function addSlide() {
   state.deck.slides.push({
     id: slideId,
     title: `New Slide ${state.deck.slides.length + 1}`,
+    theme: "obsidian",
     blocks: [
       {
         id: blockId,
@@ -512,7 +558,9 @@ function addSlide() {
         w: 44,
         h: 20,
         align: "left",
-        size: "title"
+        size: "title",
+        style: "glass",
+        tone: "default"
       }
     ]
   });
@@ -523,6 +571,54 @@ function addSlide() {
   renderDeck(false);
   renderAdminControls();
   scrollToSlide(slideId);
+  markDirty();
+}
+
+function duplicateSlide() {
+  const source = currentSlide();
+  if (!source) return;
+
+  const copy = {
+    id: uid("slide"),
+    title: `${source.title} Copy`,
+    theme: source.theme || "obsidian",
+    blocks: source.blocks.map((block) => ({
+      ...block,
+      id: uid("block")
+    }))
+  };
+
+  const sourceIndex = state.deck.slides.findIndex((slide) => slide.id === source.id);
+  const insertIndex = sourceIndex >= 0 ? sourceIndex + 1 : state.deck.slides.length;
+  state.deck.slides.splice(insertIndex, 0, copy);
+
+  state.selectedSlideId = copy.id;
+  state.selectedBlockId = copy.blocks[0]?.id || null;
+  state.activeSlideId = copy.id;
+  renderDeck(false);
+  renderAdminControls();
+  scrollToSlide(copy.id);
+  markDirty();
+}
+
+function deleteSlide() {
+  if (state.deck.slides.length <= 1) {
+    setStatus("A deck needs at least one slide.", true);
+    return;
+  }
+
+  const index = state.deck.slides.findIndex((slide) => slide.id === state.selectedSlideId);
+  if (index < 0) return;
+
+  state.deck.slides.splice(index, 1);
+  const nextSlide = state.deck.slides[Math.max(0, index - 1)] || state.deck.slides[0];
+  state.selectedSlideId = nextSlide?.id || null;
+  state.selectedBlockId = nextSlide?.blocks[0]?.id || null;
+  state.activeSlideId = state.selectedSlideId;
+
+  renderDeck(false);
+  renderAdminControls();
+  scrollToSlide(state.selectedSlideId);
   markDirty();
 }
 
@@ -537,7 +633,9 @@ function addBlock() {
     w: 34,
     h: 18,
     align: "left",
-    size: "body"
+    size: "body",
+    style: "glass",
+    tone: "default"
   };
   slide.blocks.push(block);
   state.selectedBlockId = block.id;
@@ -562,7 +660,7 @@ function resetDeck() {
   renderDeck(false);
   renderAdminControls();
   markDirty();
-  setStatus("Reset to demo deck. Save to publish.");
+  setStatus("Loaded Narrative Capture preset. Save to publish.");
 }
 
 function jumpSlide(delta) {
