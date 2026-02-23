@@ -8,6 +8,11 @@ import {
   num,
   clamp
 } from "./shared/deck-utils.js";
+import {
+  applyPresetLayout,
+  appendPresetVisual,
+  syncActiveSlideVisuals
+} from "./preset-visuals.js";
 
 const refs = {
   deck: document.getElementById("deckScroll"),
@@ -44,6 +49,7 @@ function bindEvents() {
     state.activeSlideId = slideId;
     renderProgress();
     updateHeader();
+    syncActiveState();
     scrollToSlide(slideId);
   });
 
@@ -120,8 +126,10 @@ function renderDeck() {
 
     const content = canvas.querySelector(".slide-content");
     slide.blocks.forEach((block, blockIndex) => {
-      content.appendChild(buildBlockElement(block, blockIndex));
+      content.appendChild(buildBlockElement(slide.id, block, blockIndex));
     });
+
+    appendPresetVisual(canvas, slide.id);
 
     shell.appendChild(canvas);
     refs.deck.appendChild(shell);
@@ -130,23 +138,109 @@ function renderDeck() {
   setupObserver();
   renderProgress();
   updateHeader();
+  syncActiveState();
 }
 
-function buildBlockElement(block, index) {
+function buildBlockElement(slideId, block, index) {
+  const renderedBlock = applyPresetLayout(slideId, block);
   const el = document.createElement("div");
-  const sizeClass = SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body;
-  const styleClass = BLOCK_STYLE_CLASS_MAP[block.style] || BLOCK_STYLE_CLASS_MAP.glass;
-  const toneClass = BLOCK_TONE_CLASS_MAP[block.tone] || BLOCK_TONE_CLASS_MAP.default;
+  const sizeClass = SIZE_CLASS_MAP[renderedBlock.size] || SIZE_CLASS_MAP.body;
+  const styleClass = BLOCK_STYLE_CLASS_MAP[renderedBlock.style] || BLOCK_STYLE_CLASS_MAP.glass;
+  const toneClass = BLOCK_TONE_CLASS_MAP[renderedBlock.tone] || BLOCK_TONE_CLASS_MAP.default;
   el.className = `slide-block ${sizeClass} ${styleClass} ${toneClass}`;
   el.style.setProperty("--i", String(index));
-  applyBlockStyle(el, block);
+  applyBlockStyle(el, renderedBlock);
 
-  const text = document.createElement("p");
-  text.className = "slide-block__text";
-  text.textContent = block.text;
-  el.appendChild(text);
+  el.appendChild(buildTextContent(renderedBlock.text));
 
   return el;
+}
+
+function buildTextContent(rawText) {
+  const text = document.createElement("div");
+  text.className = "slide-block__text";
+  const sections = String(rawText || "")
+    .replace(/\r/g, "")
+    .split(/\n{2,}/);
+
+  sections.forEach((section) => {
+    const lines = section
+      .split("\n")
+      .map((line) => line.trimEnd())
+      .filter((line) => line.trim() !== "");
+    if (!lines.length) return;
+    appendSection(text, lines);
+  });
+
+  if (!text.childNodes.length) {
+    const paragraph = document.createElement("p");
+    paragraph.textContent = String(rawText || "");
+    text.appendChild(paragraph);
+  }
+
+  return text;
+}
+
+function appendSection(container, lines) {
+  if (lines.every(isBulletLine)) {
+    container.appendChild(createList(lines, false));
+    return;
+  }
+
+  if (lines.every(isNumberedLine)) {
+    container.appendChild(createList(lines, true));
+    return;
+  }
+
+  const [firstLine, ...rest] = lines;
+  if (rest.length && isHeadingLine(firstLine) && rest.every(isBulletLine)) {
+    container.appendChild(createParagraph([firstLine]));
+    container.appendChild(createList(rest, false));
+    return;
+  }
+
+  if (rest.length && isHeadingLine(firstLine) && rest.every(isNumberedLine)) {
+    container.appendChild(createParagraph([firstLine]));
+    container.appendChild(createList(rest, true));
+    return;
+  }
+
+  container.appendChild(createParagraph(lines));
+}
+
+function createParagraph(lines) {
+  const paragraph = document.createElement("p");
+  lines.forEach((line, index) => {
+    if (index > 0) paragraph.appendChild(document.createElement("br"));
+    paragraph.appendChild(document.createTextNode(stripLeadingMarker(line)));
+  });
+  return paragraph;
+}
+
+function createList(lines, ordered) {
+  const list = document.createElement(ordered ? "ol" : "ul");
+  lines.forEach((line) => {
+    const item = document.createElement("li");
+    item.textContent = stripLeadingMarker(line);
+    list.appendChild(item);
+  });
+  return list;
+}
+
+function isBulletLine(line) {
+  return /^\s*(?:\u2022|[-*])\s+/.test(line);
+}
+
+function isNumberedLine(line) {
+  return /^\s*\d+\.\s+/.test(line);
+}
+
+function isHeadingLine(line) {
+  return /[:.]$/.test(line.trim()) && !isBulletLine(line) && !isNumberedLine(line);
+}
+
+function stripLeadingMarker(line) {
+  return line.replace(/^\s*(?:(?:\u2022|[-*])|\d+\.)\s+/, "").trim();
 }
 
 function applyBlockStyle(element, block) {
@@ -174,6 +268,7 @@ function setupObserver() {
         state.activeSlideId = nextActiveId;
         renderProgress();
         updateHeader();
+        syncActiveState();
       });
     },
     {
@@ -226,6 +321,7 @@ function jumpSlide(delta) {
   state.activeSlideId = targetSlide.id;
   renderProgress();
   updateHeader();
+  syncActiveState();
   scrollToSlide(targetSlide.id);
 }
 
@@ -260,4 +356,8 @@ function clearError() {
     errorTimer = null;
   }
   document.querySelectorAll(".error-banner").forEach((node) => node.remove());
+}
+
+function syncActiveState() {
+  syncActiveSlideVisuals(refs.deck, state.activeSlideId);
 }
