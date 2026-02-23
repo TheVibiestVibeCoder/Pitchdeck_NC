@@ -1,23 +1,27 @@
-# Pitchdeck NC
+# Pitchdeck NC (PHP)
 
-Refactored into a multi-file app with:
+PHP-based viewer/admin pitchdeck app for deployment on a standard web host.
 
-- Viewer: `http://localhost:3000/`
-- Admin: `http://localhost:3000/admin`
-- Env-based admin login (`.env`)
+- Viewer: `/` (`index.php`)
+- Admin: `/admin.php`
+- API: `/api/deck.php`, `/api/auth.php`
 
 ## Setup
 
 1. Copy `.env.example` to `.env`
 2. Set `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`
-3. Run `npm run dev`
+3. Upload/deploy the repository to your PHP server
+4. Ensure `data/deck.json` is writable by your PHP process
 
 ## Structure
 
-- `server.js`: static server + auth + deck API
-- `public/viewer.html`: read-only slide viewer
-- `public/admin.html`: login + deck editor
-- `public/assets/css/*`: tokens/base/components/page styles
-- `public/assets/js/*`: shared API/utils + viewer/admin scripts
+- `index.php`: read-only viewer page
+- `admin.php`: admin login + editor page
+- `api/deck.php`: read/write deck JSON
+- `api/auth.php`: auth status/login/logout
+- `includes/bootstrap.php`: env/session/json helpers
+- `includes/deck.php`: deck load/save/normalize logic
+- `assets/css/*`: design tokens + shared/page styles
+- `assets/js/*`: shared API/utils + viewer/admin scripts
 - `data/deck.json`: persisted deck data
-
+- `.htaccess`: Apache defaults (`index.php` priority + `.env` protection)

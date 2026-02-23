@@ -30,30 +30,29 @@ async function request(path, options = {}) {
 }
 
 export async function fetchDeck() {
-  const payload = await request("/api/deck");
+  const payload = await request("/api/deck.php");
   return payload.deck;
 }
 
 export async function saveDeck(deck) {
-  const payload = await request("/api/deck", {
-    method: "PUT",
+  const payload = await request("/api/deck.php?action=save", {
+    method: "POST",
     body: { deck }
   });
   return payload.deck;
 }
 
 export async function getAuthStatus() {
-  return request("/api/auth/status");
+  return request("/api/auth.php?action=status");
 }
 
 export async function login(username, password) {
-  return request("/api/auth/login", {
+  return request("/api/auth.php?action=login", {
     method: "POST",
     body: { username, password }
   });
 }
 
 export async function logout() {
-  return request("/api/auth/logout", { method: "POST" });
+  return request("/api/auth.php?action=logout", { method: "POST" });
 }
-

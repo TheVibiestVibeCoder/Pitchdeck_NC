@@ -154,7 +154,7 @@ async function bootstrapAuth() {
     }
     openAuth();
   } catch (error) {
-    openAuth("Unable to reach server. Start it with `npm run dev`.");
+    openAuth("Unable to reach server API.");
     setStatus(error.message || "Auth check failed.", true);
   }
 }

@@ -34,7 +34,7 @@
         <div>
           <p class="text-label">Authentication</p>
           <h1 style="margin-top:6px;">Admin Login</h1>
-          <p class="text-caption">Credentials come from your local <code>.env</code> file.</p>
+          <p class="text-caption">Credentials come from your server-side <code>.env</code> file.</p>
         </div>
         <form id="loginForm" class="field" autocomplete="off">
           <label class="text-label" for="usernameInput">Username</label>
@@ -44,7 +44,7 @@
           <button class="btn btn--primary" type="submit">Login</button>
         </form>
         <p id="authError" class="auth-error"></p>
-        <p class="auth-note">Tip: copy <code>.env.example</code> to <code>.env</code> and set your credentials.</p>
+        <p class="auth-note">Tip: copy <code>.env.example</code> to <code>.env</code> and set strong values.</p>
       </div>
     </section>
 

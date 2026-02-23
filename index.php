@@ -25,7 +25,7 @@
       <span id="slideCounter" class="counter-pill">00 / 00</span>
       <button id="refreshBtn" class="btn btn--ghost btn--sm" type="button">Refresh</button>
       <button id="fullscreenBtn" class="btn btn--ghost btn--sm" type="button">Fullscreen</button>
-      <a href="/admin" class="btn btn--primary btn--sm">Admin</a>
+      <a href="/admin.php" class="btn btn--primary btn--sm">Admin</a>
     </div>
   </header>
 
