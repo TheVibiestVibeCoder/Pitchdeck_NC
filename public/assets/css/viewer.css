@@ -1,0 +1,12 @@
+body {
+  overflow: hidden;
+}
+
+.viewer-layout .deck-scroll {
+  padding-right: 0;
+}
+
+.viewer-layout .slide-block {
+  cursor: default;
+}
+

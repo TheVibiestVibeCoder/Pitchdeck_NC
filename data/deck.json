@@ -1,0 +1,114 @@
+{
+  "updatedAt": "2026-02-23T00:00:00.000Z",
+  "slides": [
+    {
+      "id": "slide-cover",
+      "title": "Cover",
+      "blocks": [
+        {
+          "id": "cover-hero",
+          "text": "Northern Current\nPitch Deck 2026",
+          "x": 6,
+          "y": 14,
+          "w": 62,
+          "h": 36,
+          "align": "left",
+          "size": "hero"
+        },
+        {
+          "id": "cover-sub",
+          "text": "A web-first pitchdeck template.\nScroll to move between slides.",
+          "x": 6,
+          "y": 56,
+          "w": 54,
+          "h": 20,
+          "align": "left",
+          "size": "body"
+        }
+      ]
+    },
+    {
+      "id": "slide-opportunity",
+      "title": "Problem & Opportunity",
+      "blocks": [
+        {
+          "id": "op-title",
+          "text": "The market is fragmented.\nDecision cycles are slow.",
+          "x": 7,
+          "y": 16,
+          "w": 50,
+          "h": 26,
+          "align": "left",
+          "size": "title"
+        },
+        {
+          "id": "op-body",
+          "text": "Teams spend days assembling insights from disconnected tools.",
+          "x": 7,
+          "y": 48,
+          "w": 42,
+          "h": 28,
+          "align": "left",
+          "size": "body"
+        },
+        {
+          "id": "op-metric",
+          "text": "Opportunity\n$2.6B TAM",
+          "x": 62,
+          "y": 24,
+          "w": 28,
+          "h": 32,
+          "align": "center",
+          "size": "metric"
+        }
+      ]
+    },
+    {
+      "id": "slide-traction",
+      "title": "Traction",
+      "blocks": [
+        {
+          "id": "tr-title",
+          "text": "Early traction validates demand.",
+          "x": 8,
+          "y": 14,
+          "w": 54,
+          "h": 18,
+          "align": "left",
+          "size": "title"
+        },
+        {
+          "id": "tr-1",
+          "text": "43%\nMoM growth",
+          "x": 8,
+          "y": 42,
+          "w": 24,
+          "h": 28,
+          "align": "left",
+          "size": "metric"
+        },
+        {
+          "id": "tr-2",
+          "text": "19 pilots\nacross 5 sectors",
+          "x": 38,
+          "y": 42,
+          "w": 24,
+          "h": 28,
+          "align": "left",
+          "size": "metric"
+        },
+        {
+          "id": "tr-3",
+          "text": "91 NPS\nfrom design partners",
+          "x": 68,
+          "y": 42,
+          "w": 24,
+          "h": 28,
+          "align": "left",
+          "size": "metric"
+        }
+      ]
+    }
+  ]
+}
+

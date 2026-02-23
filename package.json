@@ -1,0 +1,14 @@
+{
+  "name": "pitchdeck-nc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pitchdeck viewer and admin with env-based authentication",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
+

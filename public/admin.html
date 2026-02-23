@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pitchdeck Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body>
+  <header class="app-topbar panel">
+    <div class="brand">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <div>
+        <p class="text-label">Pitchdeck</p>
+        <p class="brand-title">Admin</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <a href="/" class="btn btn--ghost btn--sm" target="_blank" rel="noopener noreferrer">Open Viewer</a>
+      <button id="saveDeckBtn" class="btn btn--primary btn--sm hidden" type="button">Save Deck</button>
+      <button id="logoutBtn" class="btn btn--ghost btn--sm hidden" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="admin-page">
+    <section id="authScreen" class="auth-screen">
+      <div class="auth-card panel">
+        <div>
+          <p class="text-label">Authentication</p>
+          <h1 style="margin-top:6px;">Admin Login</h1>
+          <p class="text-caption">Credentials come from your local <code>.env</code> file.</p>
+        </div>
+        <form id="loginForm" class="field" autocomplete="off">
+          <label class="text-label" for="usernameInput">Username</label>
+          <input id="usernameInput" class="input" type="text" required>
+          <label class="text-label" for="passwordInput">Password</label>
+          <input id="passwordInput" class="input" type="password" required>
+          <button class="btn btn--primary" type="submit">Login</button>
+        </form>
+        <p id="authError" class="auth-error"></p>
+        <p class="auth-note">Tip: copy <code>.env.example</code> to <code>.env</code> and set your credentials.</p>
+      </div>
+    </section>
+
+    <section id="editorScreen" class="admin-layout hidden">
+      <aside class="admin-sidebar panel">
+        <div>
+          <p class="text-label">Editor</p>
+          <h2 style="margin-top:4px;">Slide Controls</h2>
+          <p class="text-caption">Edit text and layout values in percent. Save to publish for viewer.</p>
+        </div>
+
+        <div class="field">
+          <label class="text-label" for="slideSelect">Current Slide</label>
+          <select id="slideSelect"></select>
+        </div>
+
+        <div class="field">
+          <label class="text-label" for="slideTitle">Slide Title</label>
+          <input id="slideTitle" class="input" type="text" placeholder="Slide title">
+        </div>
+
+        <div class="field">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <span class="text-label">Entries</span>
+            <button id="addBlockBtn" class="btn btn--ghost btn--sm" type="button">Add Entry</button>
+          </div>
+          <div id="blockList" class="block-list"></div>
+        </div>
+
+        <form id="blockForm" class="form-grid" autocomplete="off">
+          <div class="field field--full">
+            <label class="text-label" for="blockText">Text</label>
+            <textarea id="blockText" placeholder="Entry text..."></textarea>
+          </div>
+
+          <div class="field">
+            <label class="text-label" for="blockX">X (%)</label>
+            <input id="blockX" class="input" type="number" min="0" max="100" step="1">
+          </div>
+          <div class="field">
+            <label class="text-label" for="blockY">Y (%)</label>
+            <input id="blockY" class="input" type="number" min="0" max="100" step="1">
+          </div>
+
+          <div class="field">
+            <label class="text-label" for="blockW">Width (%)</label>
+            <input id="blockW" class="input" type="number" min="4" max="100" step="1">
+          </div>
+          <div class="field">
+            <label class="text-label" for="blockH">Height (%)</label>
+            <input id="blockH" class="input" type="number" min="4" max="100" step="1">
+          </div>
+
+          <div class="field">
+            <label class="text-label" for="blockAlign">Align</label>
+            <select id="blockAlign">
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="text-label" for="blockSize">Type Scale</label>
+            <select id="blockSize">
+              <option value="caption">Caption</option>
+              <option value="body">Body</option>
+              <option value="title">Title</option>
+              <option value="metric">Metric</option>
+              <option value="hero">Hero</option>
+            </select>
+          </div>
+        </form>
+
+        <div class="admin-actions">
+          <button id="addSlideBtn" class="btn btn--ghost btn--sm" type="button">Add Slide</button>
+          <button id="deleteBlockBtn" class="btn btn--ghost btn--sm" type="button">Delete Entry</button>
+          <button id="resetDeckBtn" class="btn btn--ghost btn--sm" type="button">Reset Demo</button>
+        </div>
+
+        <p id="adminStatus" class="admin-status"></p>
+
+        <div class="hotkeys">
+          <span><code>PageDown</code> next</span>
+          <span><code>PageUp</code> prev</span>
+          <span><code>Ctrl+S</code> save</span>
+          <span><code>F</code> fullscreen</span>
+        </div>
+      </aside>
+
+      <section class="admin-preview">
+        <nav id="slideProgress" class="slide-progress" aria-label="Slide navigation"></nav>
+        <main id="deckScroll" class="deck-scroll" aria-label="Deck editor preview"></main>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="/assets/js/admin.js"></script>
+</body>
+</html>
+
