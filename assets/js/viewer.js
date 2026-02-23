@@ -1,5 +1,13 @@
 import { fetchDeck } from "./shared/api.js";
-import { SIZE_CLASS_MAP, normalizeDeck, num, clamp } from "./shared/deck-utils.js";
+import {
+  SIZE_CLASS_MAP,
+  THEME_CLASS_MAP,
+  BLOCK_STYLE_CLASS_MAP,
+  BLOCK_TONE_CLASS_MAP,
+  normalizeDeck,
+  num,
+  clamp
+} from "./shared/deck-utils.js";
 
 const refs = {
   deck: document.getElementById("deckScroll"),
@@ -96,9 +104,10 @@ function renderDeck() {
     shell.dataset.slideId = slide.id;
 
     const canvas = document.createElement("article");
-    canvas.className = "slide-canvas";
+    canvas.className = `slide-canvas ${
+      THEME_CLASS_MAP[slide.theme] || THEME_CLASS_MAP.obsidian
+    }`;
     canvas.innerHTML = `
-      <div class="slide-grid"></div>
       <div class="slide-meta">
         <div>
           <p class="text-label">Slide ${String(index + 1).padStart(2, "0")}</p>
@@ -110,7 +119,9 @@ function renderDeck() {
     canvas.querySelector(".slide-title").textContent = slide.title;
 
     const content = canvas.querySelector(".slide-content");
-    slide.blocks.forEach((block) => content.appendChild(buildBlockElement(block)));
+    slide.blocks.forEach((block, blockIndex) => {
+      content.appendChild(buildBlockElement(block, blockIndex));
+    });
 
     shell.appendChild(canvas);
     refs.deck.appendChild(shell);
@@ -121,9 +132,13 @@ function renderDeck() {
   updateHeader();
 }
 
-function buildBlockElement(block) {
+function buildBlockElement(block, index) {
   const el = document.createElement("div");
-  el.className = `slide-block ${SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body}`;
+  const sizeClass = SIZE_CLASS_MAP[block.size] || SIZE_CLASS_MAP.body;
+  const styleClass = BLOCK_STYLE_CLASS_MAP[block.style] || BLOCK_STYLE_CLASS_MAP.glass;
+  const toneClass = BLOCK_TONE_CLASS_MAP[block.tone] || BLOCK_TONE_CLASS_MAP.default;
+  el.className = `slide-block ${sizeClass} ${styleClass} ${toneClass}`;
+  el.style.setProperty("--i", String(index));
   applyBlockStyle(el, block);
 
   const text = document.createElement("p");
@@ -246,4 +261,3 @@ function clearError() {
   }
   document.querySelectorAll(".error-banner").forEach((node) => node.remove());
 }
-

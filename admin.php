@@ -6,7 +6,7 @@
   <title>Pitchdeck Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/components.css">
@@ -53,7 +53,7 @@
         <div>
           <p class="text-label">Editor</p>
           <h2 style="margin-top:4px;">Slide Controls</h2>
-          <p class="text-caption">Edit text and layout values in percent. Save to publish for viewer.</p>
+          <p class="text-caption">Edit text, layout, and styling values in percent. Save to publish for viewer.</p>
         </div>
 
         <div class="field">
@@ -64,6 +64,16 @@
         <div class="field">
           <label class="text-label" for="slideTitle">Slide Title</label>
           <input id="slideTitle" class="input" type="text" placeholder="Slide title">
+        </div>
+
+        <div class="field">
+          <label class="text-label" for="slideTheme">Slide Theme</label>
+          <select id="slideTheme">
+            <option value="obsidian">Obsidian</option>
+            <option value="cobalt">Cobalt</option>
+            <option value="ember">Ember</option>
+            <option value="emerald">Emerald</option>
+          </select>
         </div>
 
         <div class="field">
@@ -117,12 +127,36 @@
               <option value="hero">Hero</option>
             </select>
           </div>
+
+          <div class="field">
+            <label class="text-label" for="blockStyle">Block Style</label>
+            <select id="blockStyle">
+              <option value="glass">Glass</option>
+              <option value="solid">Solid</option>
+              <option value="outline">Outline</option>
+              <option value="accent">Accent</option>
+              <option value="plain">Plain</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="text-label" for="blockTone">Tone</label>
+            <select id="blockTone">
+              <option value="default">Default</option>
+              <option value="muted">Muted</option>
+              <option value="accent">Accent</option>
+              <option value="warning">Warning</option>
+              <option value="success">Success</option>
+            </select>
+          </div>
         </form>
 
         <div class="admin-actions">
           <button id="addSlideBtn" class="btn btn--ghost btn--sm" type="button">Add Slide</button>
+          <button id="duplicateSlideBtn" class="btn btn--ghost btn--sm" type="button">Duplicate Slide</button>
+          <button id="deleteSlideBtn" class="btn btn--ghost btn--sm" type="button">Delete Slide</button>
           <button id="deleteBlockBtn" class="btn btn--ghost btn--sm" type="button">Delete Entry</button>
-          <button id="resetDeckBtn" class="btn btn--ghost btn--sm" type="button">Reset Demo</button>
+          <button id="resetDeckBtn" class="btn btn--ghost btn--sm" type="button">Load Pitch Preset</button>
         </div>
 
         <p id="adminStatus" class="admin-status"></p>
@@ -145,4 +179,3 @@
   <script type="module" src="/assets/js/admin.js"></script>
 </body>
 </html>
-
