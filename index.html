@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pitchdeck Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink-900: #080a0d;
+      --ink-800: #13171d;
+      --ink-700: #1c222b;
+      --ink-500: #49586b;
+      --ink-400: #748198;
+      --ink-300: #a2adbf;
+      --accent: #ff9966;
+      --accent-light: #ffb28c;
+      --accent-dim: rgba(255, 153, 102, 0.16);
+      --accent-glow: rgba(255, 153, 102, 0.3);
+      --surface-base: #050607;
+      --surface-overlay: rgba(10, 12, 16, 0.92);
+      --surface-muted: #161b23;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-default: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --border-accent: rgba(255, 153, 102, 0.32);
+      --text-primary: #f4f7fb;
+      --text-secondary: #a9b3c3;
+      --text-muted: #c6ceda;
+      --sp-4: 4px;
+      --sp-8: 8px;
+      --sp-12: 12px;
+      --sp-16: 16px;
+      --sp-24: 24px;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.45), 0 6px 16px rgba(0, 0, 0, 0.32);
+      --shadow-glow: 0 0 28px rgba(255, 153, 102, 0.18);
+      --duration-micro: 140ms;
+      --duration-ui: 260ms;
+      --duration-overlay: 360ms;
+      --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-subtle: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --font-sans: "Manrope", "Segoe UI", sans-serif;
+      --font-display: "Sora", "Manrope", sans-serif;
+      --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
+      --text-xs: 0.6875rem;
+      --text-sm: 0.75rem;
+      --text-base: 0.875rem;
+      --text-md: 1rem;
+      --text-xl: 1.5rem;
+      --leading-normal: 1.5;
+      --tracking-tight: -0.028em;
+      --tracking-normal: -0.012em;
+      --tracking-wide: 0.04em;
+      --z-nav: 100;
+      --z-sheet: 500;
+      --noise-url: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      --topbar-h: 82px;
+      --admin-w: 350px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --duration-micro: 0ms;
+        --duration-ui: 0ms;
+        --duration-overlay: 0ms;
+      }
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      background-color: var(--surface-base);
+      background-image:
+        radial-gradient(circle at 12% -20%, rgba(255, 153, 102, 0.22) 0%, rgba(255, 153, 102, 0) 42%),
+        radial-gradient(circle at 92% 6%, rgba(255, 153, 102, 0.08) 0%, rgba(255, 153, 102, 0) 38%),
+        linear-gradient(180deg, #0a0c10 0%, #050607 100%);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      line-height: var(--leading-normal);
+      letter-spacing: var(--tracking-normal);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: var(--noise-url);
+      opacity: 0.2;
+      mix-blend-mode: soft-light;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      letter-spacing: var(--tracking-tight);
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .text-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wide);
+      color: var(--text-secondary);
+    }
+
+    .text-caption {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    .panel {
+      position: relative;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
+        var(--surface-overlay);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-8);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      padding: var(--sp-8) var(--sp-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--duration-micro) var(--ease-standard);
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background: var(--accent);
+      color: #2a1308;
+      border-color: var(--accent);
+      box-shadow: 0 10px 20px rgba(255, 153, 102, 0.26);
+    }
+
+    .btn--primary:hover {
+      background: var(--accent-light);
+      border-color: var(--accent-light);
+    }
+
+    .btn--ghost {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      border-color: var(--border-default);
+    }
+
+    .btn--ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn--sm {
+      padding: var(--sp-4) var(--sp-12);
+      font-size: var(--text-xs);
+    }
+
+    .input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.24);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      padding: var(--sp-8) var(--sp-12);
+    }
+
+    .input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--border-accent);
+      box-shadow: 0 0 0 3px rgba(255, 153, 102, 0.14);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+      line-height: var(--leading-normal);
+    }
+
+    .topbar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-12);
+      padding: var(--sp-16);
+      z-index: var(--z-nav);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-12);
+      min-width: 0;
+    }
+
+    .brand-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffd5be, var(--accent));
+      box-shadow: var(--shadow-glow);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: var(--text-md);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-8);
+    }
+
+    .counter-pill {
+      padding: 6px 12px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-default);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .deck-scroll {
+      height: 100dvh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      transition: padding-right var(--duration-ui) var(--ease-standard);
+    }
+
+    body.admin-open .deck-scroll {
+      padding-right: calc(var(--admin-w) + 26px);
+    }
+
+    .slide-shell {
+      min-height: 100dvh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--topbar-h) + 34px) 28px 30px;
+    }
+
+    .slide {
+      position: relative;
+      width: min(94vw, calc((100dvh - var(--topbar-h) - 90px) * 1.7778));
+      max-width: 1380px;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background:
+        radial-gradient(circle at 14% 10%, rgba(255, 153, 102, 0.18), rgba(255, 153, 102, 0) 36%),
+        radial-gradient(circle at 86% 0%, rgba(255, 153, 102, 0.1), rgba(255, 153, 102, 0) 40%),
+        linear-gradient(160deg, rgba(18, 23, 30, 0.94), rgba(6, 8, 12, 0.92));
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--noise-url);
+      opacity: 0.16;
+      pointer-events: none;
+    }
+
+    .slide-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 6.25% 12.5%;
+    }
+
+    .slide-meta {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .slide-title {
+      margin-top: 4px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-content {
+      position: absolute;
+      inset: 0;
+      padding: clamp(14px, 2vw, 28px);
+      z-index: 2;
+    }
+
+    .slide-block {
+      position: absolute;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+      padding: clamp(10px, 1.4vw, 18px);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: border-color var(--duration-micro) var(--ease-standard), box-shadow var(--duration-micro) var(--ease-standard);
+      animation: blockIn .45s var(--ease-subtle) both;
+      animation-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    @keyframes blockIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-block:hover { border-color: rgba(255, 255, 255, 0.2); }
+
+    .slide-block.is-selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 153, 102, 0.22);
+    }
+
+    .slide-block__text {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .slide-block--caption .slide-block__text { font-size: var(--text-sm); color: var(--text-secondary); }
+    .slide-block--body .slide-block__text { font-size: clamp(.82rem, 1vw, 1.02rem); color: var(--text-muted); }
+    .slide-block--title .slide-block__text { font-family: var(--font-display); font-size: clamp(1.02rem, 1.8vw, 1.9rem); line-height: 1.2; }
+    .slide-block--metric .slide-block__text { font-family: var(--font-display); font-size: clamp(1.2rem, 2.8vw, 2.7rem); color: var(--accent-light); }
+    .slide-block--hero .slide-block__text { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 3.4rem); line-height: 1.03; }
+
+    .slide-progress {
+      position: fixed;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: var(--z-nav);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 24px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-default);
+      background: rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      transition: transform var(--duration-ui) var(--ease-standard), background var(--duration-ui) var(--ease-standard);
+    }
+
+    .progress-dot:hover { transform: scaleX(1.2); }
+
+    .progress-dot.is-active {
+      background: var(--accent);
+      border-color: var(--accent-light);
+      box-shadow: var(--shadow-glow);
+      transform: scaleX(1.25);
+    }
+
+    .admin {
+      position: fixed;
+      top: calc(16px + var(--topbar-h) + 10px);
+      right: 16px;
+      bottom: 16px;
+      width: min(var(--admin-w), calc(100vw - 32px));
+      z-index: var(--z-sheet);
+      padding: var(--sp-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-16);
+      overflow: auto;
+      transform: translateX(calc(100% + 20px));
+      opacity: 0;
+      pointer-events: none;
+      transition: transform var(--duration-overlay) var(--ease-standard), opacity var(--duration-overlay) var(--ease-standard);
+    }
+
+    body.admin-open .admin {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field--full { grid-column: 1 / -1; }
+
+    .block-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 160px;
+      overflow: auto;
+      margin-top: 8px;
+    }
+
+    .block-item {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      text-align: left;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    .block-item:hover { border-color: var(--border-strong); color: var(--text-primary); }
+
+    .block-item.is-active {
+      color: var(--accent-light);
+      border-color: var(--border-accent);
+      background: var(--accent-dim);
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .empty-note {
+      border: 1px dashed var(--border-default);
+      color: var(--ink-400);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      text-align: center;
+      font-size: var(--text-sm);
+    }
+
+    .hotkeys {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--ink-300);
+      font-size: var(--text-xs);
+    }
+
+    .hotkeys code {
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 1px 5px;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 1240px) {
+      body.admin-open .deck-scroll { padding-right: 0; }
+      .slide-progress { display: none; }
+    }
+
+    @media (max-width: 920px) {
+      :root { --topbar-h: 94px; }
+      .topbar { flex-wrap: wrap; align-items: flex-start; }
+      .toolbar { width: 100%; justify-content: flex-end; }
+      .slide-shell { padding-top: calc(var(--topbar-h) + 26px); }
+    }
+
+    @media (max-width: 760px) {
+      .topbar { left: 10px; right: 10px; top: 10px; padding: 12px; }
+      .counter-pill { display: none; }
+      .slide-shell { padding: calc(var(--topbar-h) + 18px) 10px 12px; }
+      .slide { width: 100%; }
+      .admin { top: calc(10px + var(--topbar-h) + 6px); right: 10px; left: 10px; width: auto; bottom: 10px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="admin-open">
+  <header class="topbar panel">
+    <div class="brand">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <div>
+        <p class="text-label">Pitchdeck Studio</p>
+        <p class="brand-title" id="activeSlideTitle">Cover</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="counter-pill" id="slideCounter">01 / 01</span>
+      <button id="addSlideBtn" class="btn btn--ghost btn--sm" type="button">Add Slide</button>
+      <button id="fullscreenBtn" class="btn btn--ghost btn--sm" type="button">Fullscreen</button>
+      <button id="adminToggleBtn" class="btn btn--primary btn--sm" type="button">Hide Admin</button>
+    </div>
+  </header>
+
+  <nav id="slideProgress" class="slide-progress" aria-label="Slide navigation"></nav>
+  <main id="deckScroll" class="deck-scroll" aria-label="Pitchdeck slides"></main>
+
+  <aside id="adminPanel" class="admin panel" aria-label="Admin editor">
+    <div>
+      <p class="text-label">Editor</p>
+      <h2 style="margin-top:4px;font-size:1.15rem;">Slide Controls</h2>
+      <p class="text-caption">Click any entry in a slide and edit text, position, width and height (in %).</p>
+    </div>
+
+    <div class="field">
+      <label class="text-label" for="slideSelect">Current Slide</label>
+      <select id="slideSelect"></select>
+    </div>
+
+    <div class="field">
+      <label class="text-label" for="slideTitle">Slide Title</label>
+      <input id="slideTitle" class="input" type="text" placeholder="Slide title">
+    </div>
+
+    <div class="field">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <span class="text-label">Entries</span>
+        <button id="addBlockBtn" class="btn btn--ghost btn--sm" type="button">Add Entry</button>
+      </div>
+      <div id="blockList" class="block-list"></div>
+    </div>
+
+    <form id="blockForm" class="form-grid" autocomplete="off">
+      <div class="field field--full">
+        <label class="text-label" for="blockText">Text</label>
+        <textarea id="blockText" placeholder="Entry text..."></textarea>
+      </div>
+      <div class="field">
+        <label class="text-label" for="blockX">X (%)</label>
+        <input id="blockX" class="input" type="number" min="0" max="100" step="1">
+      </div>
+      <div class="field">
+        <label class="text-label" for="blockY">Y (%)</label>
+        <input id="blockY" class="input" type="number" min="0" max="100" step="1">
+      </div>
+      <div class="field">
+        <label class="text-label" for="blockW">Width (%)</label>
+        <input id="blockW" class="input" type="number" min="4" max="100" step="1">
+      </div>
+      <div class="field">
+        <label class="text-label" for="blockH">Height (%)</label>
+        <input id="blockH" class="input" type="number" min="4" max="100" step="1">
+      </div>
+      <div class="field">
+        <label class="text-label" for="blockAlign">Align</label>
+        <select id="blockAlign">
+          <option value="left">Left</option>
+          <option value="center">Center</option>
+          <option value="right">Right</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="text-label" for="blockSize">Type Scale</label>
+        <select id="blockSize">
+          <option value="caption">Caption</option>
+          <option value="body">Body</option>
+          <option value="title">Title</option>
+          <option value="metric">Metric</option>
+          <option value="hero">Hero</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="admin-actions">
+      <button id="deleteBlockBtn" class="btn btn--ghost btn--sm" type="button">Delete Entry</button>
+      <button id="resetDeckBtn" class="btn btn--ghost btn--sm" type="button">Reset Demo</button>
+    </div>
+
+    <div class="hotkeys">
+      <span><code>PageDown</code> next</span>
+      <span><code>PageUp</code> prev</span>
+      <span><code>F</code> fullscreen</span>
+      <span><code>A</code> admin</span>
+    </div>
+  </aside>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "pitchdeck_studio_state_v1";
+      const sizeClass = { caption: "slide-block--caption", body: "slide-block--body", title: "slide-block--title", metric: "slide-block--metric", hero: "slide-block--hero" };
+
+      const refs = {
+        deck: document.getElementById("deckScroll"),
+        progress: document.getElementById("slideProgress"),
+        counter: document.getElementById("slideCounter"),
+        activeTitle: document.getElementById("activeSlideTitle"),
+        addSlideBtn: document.getElementById("addSlideBtn"),
+        fullscreenBtn: document.getElementById("fullscreenBtn"),
+        adminToggleBtn: document.getElementById("adminToggleBtn"),
+        slideSelect: document.getElementById("slideSelect"),
+        slideTitle: document.getElementById("slideTitle"),
+        blockList: document.getElementById("blockList"),
+        form: document.getElementById("blockForm"),
+        blockText: document.getElementById("blockText"),
+        blockX: document.getElementById("blockX"),
+        blockY: document.getElementById("blockY"),
+        blockW: document.getElementById("blockW"),
+        blockH: document.getElementById("blockH"),
+        blockAlign: document.getElementById("blockAlign"),
+        blockSize: document.getElementById("blockSize"),
+        addBlockBtn: document.getElementById("addBlockBtn"),
+        deleteBlockBtn: document.getElementById("deleteBlockBtn"),
+        resetDeckBtn: document.getElementById("resetDeckBtn")
+      };
+
+      const state = load();
+      let observer;
+      let saveTimer;
+
+      init();
+
+      function init() {
+        bind();
+        ensure();
+        renderStructure(false);
+        renderAdmin();
+        applyAdmin();
+      }
+
+      function defaults() {
+        return {
+          slides: [
+            {
+              id: "slide-cover",
+              title: "Cover",
+              blocks: [
+                { id: "cover-hero", text: "Northern Current\nPitch Deck 2026", x: 6, y: 14, w: 62, h: 36, align: "left", size: "hero" },
+                { id: "cover-sub", text: "A web-first pitchdeck template.\nScroll to move between slides.", x: 6, y: 56, w: 54, h: 20, align: "left", size: "body" }
+              ]
+            },
+            {
+              id: "slide-opportunity",
+              title: "Problem & Opportunity",
+              blocks: [
+                { id: "op-title", text: "The market is fragmented.\nDecision cycles are slow.", x: 7, y: 16, w: 50, h: 26, align: "left", size: "title" },
+                { id: "op-body", text: "Teams spend days assembling insights from disconnected tools.", x: 7, y: 48, w: 42, h: 28, align: "left", size: "body" },
+                { id: "op-metric", text: "Opportunity\n$2.6B TAM", x: 62, y: 24, w: 28, h: 32, align: "center", size: "metric" }
+              ]
+            },
+            {
+              id: "slide-traction",
+              title: "Traction",
+              blocks: [
+                { id: "tr-title", text: "Early traction validates demand.", x: 8, y: 14, w: 54, h: 18, align: "left", size: "title" },
+                { id: "tr-1", text: "43%\nMoM growth", x: 8, y: 42, w: 24, h: 28, align: "left", size: "metric" },
+                { id: "tr-2", text: "19 pilots\nacross 5 sectors", x: 38, y: 42, w: 24, h: 28, align: "left", size: "metric" },
+                { id: "tr-3", text: "91 NPS\nfrom design partners", x: 68, y: 42, w: 24, h: 28, align: "left", size: "metric" }
+              ]
+            }
+          ],
+          selectedSlideId: "slide-cover",
+          selectedBlockId: "cover-hero",
+          activeSlideId: "slide-cover",
+          adminOpen: true
+        };
+      }
+
+      function load() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return defaults();
+          const parsed = JSON.parse(raw);
+          if (!parsed || !Array.isArray(parsed.slides)) return defaults();
+          return {
+            slides: parsed.slides,
+            selectedSlideId: parsed.selectedSlideId,
+            selectedBlockId: parsed.selectedBlockId,
+            activeSlideId: parsed.activeSlideId,
+            adminOpen: parsed.adminOpen !== false
+          };
+        } catch {
+          return defaults();
+        }
+      }
+
+      function saveSoon() {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => localStorage.setItem(STORAGE_KEY, JSON.stringify(state)), 120);
+      }
+
+      function bind() {
+        refs.addSlideBtn.addEventListener("click", addSlide);
+        refs.addBlockBtn.addEventListener("click", addBlock);
+        refs.deleteBlockBtn.addEventListener("click", deleteBlock);
+        refs.resetDeckBtn.addEventListener("click", resetDeck);
+        refs.fullscreenBtn.addEventListener("click", toggleFullscreen);
+        refs.adminToggleBtn.addEventListener("click", () => setAdmin(!state.adminOpen));
+
+        refs.slideSelect.addEventListener("change", () => {
+          state.selectedSlideId = refs.slideSelect.value;
+          const slide = currentSlide();
+          state.selectedBlockId = slide?.blocks[0]?.id || null;
+          state.activeSlideId = state.selectedSlideId;
+          renderAdmin();
+          syncSelection();
+          renderStatus();
+          renderProgress();
+          scrollToSlide(state.selectedSlideId);
+          saveSoon();
+        });
+
+        refs.slideTitle.addEventListener("input", () => {
+          const slide = currentSlide();
+          if (!slide) return;
+          slide.title = refs.slideTitle.value || "Untitled";
+          const titleEl = refs.deck.querySelector(`.slide-shell[data-slide-id="${slide.id}"] .slide-title`);
+          if (titleEl) titleEl.textContent = slide.title;
+          renderStatus();
+          renderProgress();
+          saveSoon();
+        });
+
+        refs.blockList.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-block-id]");
+          if (!btn) return;
+          state.selectedBlockId = btn.dataset.blockId;
+          renderAdmin();
+          syncSelection();
+          saveSoon();
+        });
+
+        refs.form.addEventListener("input", onBlockInput);
+
+        refs.deck.addEventListener("click", (e) => {
+          const block = e.target.closest(".slide-block");
+          if (block) {
+            state.selectedSlideId = block.dataset.slideId;
+            state.selectedBlockId = block.dataset.blockId;
+            state.activeSlideId = block.dataset.slideId;
+            renderAdmin();
+            syncSelection();
+            renderStatus();
+            renderProgress();
+            saveSoon();
+            return;
+          }
+
+          const slide = e.target.closest(".slide-shell");
+          if (slide) {
+            state.selectedSlideId = slide.dataset.slideId;
+            const active = currentSlide();
+            state.selectedBlockId = active?.blocks[0]?.id || null;
+            state.activeSlideId = state.selectedSlideId;
+            renderAdmin();
+            syncSelection();
+            renderStatus();
+            renderProgress();
+            saveSoon();
+          }
+        });
+
+        refs.progress.addEventListener("click", (e) => {
+          const dot = e.target.closest("[data-slide-id]");
+          if (!dot) return;
+          state.selectedSlideId = dot.dataset.slideId;
+          const slide = currentSlide();
+          state.selectedBlockId = slide?.blocks[0]?.id || null;
+          state.activeSlideId = state.selectedSlideId;
+          renderAdmin();
+          syncSelection();
+          renderStatus();
+          renderProgress();
+          scrollToSlide(state.selectedSlideId);
+          saveSoon();
+        });
+
+        document.addEventListener("keydown", (e) => {
+          const tag = e.target.tagName?.toLowerCase();
+          if (["input", "textarea", "select"].includes(tag)) return;
+
+          if (e.key === "PageDown" || e.key === "ArrowDown") {
+            e.preventDefault();
+            jump(1);
+          } else if (e.key === "PageUp" || e.key === "ArrowUp") {
+            e.preventDefault();
+            jump(-1);
+          } else if (e.key.toLowerCase() === "f") {
+            e.preventDefault();
+            toggleFullscreen();
+          } else if (e.key.toLowerCase() === "a") {
+            e.preventDefault();
+            setAdmin(!state.adminOpen);
+          }
+        });
+
+        document.addEventListener("fullscreenchange", () => {
+          refs.fullscreenBtn.textContent = document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen";
+        });
+      }
+
+      function renderStructure(preserveScroll = true) {
+        const scrollTop = refs.deck.scrollTop;
+        refs.deck.innerHTML = "";
+
+        state.slides.forEach((slide, idx) => {
+          const section = document.createElement("section");
+          section.className = "slide-shell";
+          section.dataset.slideId = slide.id;
+
+          const canvas = document.createElement("article");
+          canvas.className = "slide";
+          canvas.innerHTML = `
+            <div class="slide-grid"></div>
+            <div class="slide-meta">
+              <p class="text-label">Slide ${String(idx + 1).padStart(2, "0")}</p>
+              <p class="slide-title">${escapeHtml(slide.title)}</p>
+            </div>
+            <div class="slide-content"></div>
+          `;
+
+          const content = canvas.querySelector(".slide-content");
+          slide.blocks.forEach((block, blockIdx) => content.appendChild(buildBlock(slide.id, block, blockIdx)));
+
+          section.appendChild(canvas);
+          refs.deck.appendChild(section);
+        });
+
+        if (preserveScroll) refs.deck.scrollTop = scrollTop;
+        watchSlides();
+        syncSelection();
+        renderStatus();
+        renderProgress();
+      }
+
+      function buildBlock(slideId, block, index) {
+        const el = document.createElement("article");
+        el.className = `slide-block ${sizeClass[block.size] || sizeClass.body}`;
+        el.dataset.slideId = slideId;
+        el.dataset.blockId = block.id;
+        el.style.setProperty("--i", String(index));
+        paintBlock(el, block);
+        const p = document.createElement("p");
+        p.className = "slide-block__text";
+        p.textContent = block.text;
+        el.appendChild(p);
+        return el;
+      }
+
+      function paintBlock(el, block) {
+        block.w = clamp(num(block.w, 40), 4, 100);
+        block.h = clamp(num(block.h, 20), 4, 100);
+        block.x = clamp(num(block.x, 0), 0, 100 - block.w);
+        block.y = clamp(num(block.y, 0), 0, 100 - block.h);
+        block.align = block.align || "left";
+        block.size = block.size || "body";
+
+        el.style.left = `${block.x}%`;
+        el.style.top = `${block.y}%`;
+        el.style.width = `${block.w}%`;
+        el.style.height = `${block.h}%`;
+        el.style.textAlign = block.align;
+      }
+
+      function watchSlides() {
+        if (observer) observer.disconnect();
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.58) return;
+            const id = entry.target.dataset.slideId;
+            if (id === state.activeSlideId) return;
+            state.activeSlideId = id;
+            renderStatus();
+            renderProgress();
+          });
+        }, { root: refs.deck, threshold: [0.42, 0.58, 0.75] });
+
+        refs.deck.querySelectorAll(".slide-shell").forEach((node) => observer.observe(node));
+      }
+
+      function renderStatus() {
+        const total = state.slides.length;
+        const idx = Math.max(0, state.slides.findIndex((s) => s.id === state.activeSlideId));
+        refs.counter.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+        refs.activeTitle.textContent = state.slides[idx]?.title || "Pitchdeck";
+      }
+
+      function renderProgress() {
+        refs.progress.innerHTML = "";
+        state.slides.forEach((slide, idx) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = `progress-dot${slide.id === state.activeSlideId ? " is-active" : ""}`;
+          dot.dataset.slideId = slide.id;
+          dot.title = `Slide ${idx + 1}: ${slide.title}`;
+          dot.setAttribute("aria-label", `Jump to slide ${idx + 1}`);
+          refs.progress.appendChild(dot);
+        });
+      }
+
+      function renderAdmin() {
+        ensure();
+        refs.slideSelect.innerHTML = "";
+        state.slides.forEach((slide, idx) => {
+          const option = document.createElement("option");
+          option.value = slide.id;
+          option.textContent = `Slide ${idx + 1} - ${slide.title}`;
+          refs.slideSelect.appendChild(option);
+        });
+        refs.slideSelect.value = state.selectedSlideId || "";
+
+        const slide = currentSlide();
+        const block = currentBlock();
+        refs.slideTitle.value = slide?.title || "";
+
+        refs.blockList.innerHTML = "";
+        if (!slide || !slide.blocks.length) {
+          refs.blockList.innerHTML = '<div class="empty-note">No entries in this slide.</div>';
+        } else {
+          slide.blocks.forEach((item, idx) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = `block-item${item.id === state.selectedBlockId ? " is-active" : ""}`;
+            btn.dataset.blockId = item.id;
+            btn.textContent = preview(item.text, idx);
+            refs.blockList.appendChild(btn);
+          });
+        }
+
+        const disabled = !slide || !block;
+        [refs.blockText, refs.blockX, refs.blockY, refs.blockW, refs.blockH, refs.blockAlign, refs.blockSize, refs.deleteBlockBtn].forEach((el) => {
+          el.disabled = disabled;
+        });
+
+        if (disabled) {
+          refs.blockText.value = "";
+          refs.blockX.value = "";
+          refs.blockY.value = "";
+          refs.blockW.value = "";
+          refs.blockH.value = "";
+          refs.blockAlign.value = "left";
+          refs.blockSize.value = "body";
+          return;
+        }
+
+        refs.blockText.value = block.text;
+        refs.blockX.value = String(block.x);
+        refs.blockY.value = String(block.y);
+        refs.blockW.value = String(block.w);
+        refs.blockH.value = String(block.h);
+        refs.blockAlign.value = block.align;
+        refs.blockSize.value = block.size;
+      }
+
+      function syncSelection() {
+        refs.deck.querySelectorAll(".slide-block.is-selected").forEach((el) => el.classList.remove("is-selected"));
+        if (!state.selectedSlideId || !state.selectedBlockId) return;
+        const el = blockElement(state.selectedSlideId, state.selectedBlockId);
+        if (el) el.classList.add("is-selected");
+      }
+
+      function onBlockInput() {
+        const block = currentBlock();
+        if (!block) return;
+
+        block.text = refs.blockText.value;
+        block.w = clamp(num(refs.blockW.value, block.w), 4, 100);
+        block.h = clamp(num(refs.blockH.value, block.h), 4, 100);
+        block.x = clamp(num(refs.blockX.value, block.x), 0, 100 - block.w);
+        block.y = clamp(num(refs.blockY.value, block.y), 0, 100 - block.h);
+        block.align = refs.blockAlign.value;
+        block.size = refs.blockSize.value;
+
+        refs.blockX.value = String(block.x);
+        refs.blockY.value = String(block.y);
+        refs.blockW.value = String(block.w);
+        refs.blockH.value = String(block.h);
+
+        const el = blockElement(state.selectedSlideId, state.selectedBlockId);
+        if (el) {
+          el.className = `slide-block ${sizeClass[block.size] || sizeClass.body} is-selected`;
+          paintBlock(el, block);
+          el.querySelector(".slide-block__text").textContent = block.text;
+        }
+
+        const slide = currentSlide();
+        const index = slide ? slide.blocks.findIndex((item) => item.id === block.id) : -1;
+        const listEl = refs.blockList.querySelector(`[data-block-id="${state.selectedBlockId}"]`);
+        if (listEl && index >= 0) listEl.textContent = preview(block.text, index);
+        saveSoon();
+      }
+
+      function addSlide() {
+        const sid = uid("slide");
+        const bid = uid("block");
+        state.slides.push({
+          id: sid,
+          title: `New Slide ${state.slides.length + 1}`,
+          blocks: [{ id: bid, text: "New entry", x: 8, y: 12, w: 42, h: 20, align: "left", size: "title" }]
+        });
+        state.selectedSlideId = sid;
+        state.selectedBlockId = bid;
+        state.activeSlideId = sid;
+        renderStructure(false);
+        renderAdmin();
+        scrollToSlide(sid);
+        saveSoon();
+      }
+
+      function addBlock() {
+        const slide = currentSlide();
+        if (!slide) return;
+        const block = { id: uid("block"), text: "Editable entry", x: 10, y: 16, w: 34, h: 18, align: "left", size: "body" };
+        slide.blocks.push(block);
+        state.selectedBlockId = block.id;
+        renderStructure();
+        renderAdmin();
+        saveSoon();
+      }
+
+      function deleteBlock() {
+        const slide = currentSlide();
+        if (!slide || !state.selectedBlockId) return;
+        slide.blocks = slide.blocks.filter((b) => b.id !== state.selectedBlockId);
+        state.selectedBlockId = slide.blocks[0]?.id || null;
+        renderStructure();
+        renderAdmin();
+        saveSoon();
+      }
+
+      function resetDeck() {
+        const fresh = defaults();
+        state.slides = fresh.slides;
+        state.selectedSlideId = fresh.selectedSlideId;
+        state.selectedBlockId = fresh.selectedBlockId;
+        state.activeSlideId = fresh.activeSlideId;
+        state.adminOpen = fresh.adminOpen;
+        localStorage.removeItem(STORAGE_KEY);
+        applyAdmin();
+        renderStructure(false);
+        renderAdmin();
+      }
+
+      function jump(delta) {
+        const index = state.slides.findIndex((s) => s.id === state.activeSlideId);
+        const target = clamp(index + delta, 0, state.slides.length - 1);
+        const next = state.slides[target];
+        if (!next) return;
+        state.activeSlideId = next.id;
+        state.selectedSlideId = next.id;
+        state.selectedBlockId = next.blocks[0]?.id || null;
+        renderStatus();
+        renderProgress();
+        renderAdmin();
+        syncSelection();
+        scrollToSlide(next.id);
+        saveSoon();
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+
+      function setAdmin(open) {
+        state.adminOpen = Boolean(open);
+        applyAdmin();
+        saveSoon();
+      }
+
+      function applyAdmin() {
+        document.body.classList.toggle("admin-open", state.adminOpen);
+        refs.adminToggleBtn.textContent = state.adminOpen ? "Hide Admin" : "Show Admin";
+      }
+
+      function scrollToSlide(slideId) {
+        const target = refs.deck.querySelector(`.slide-shell[data-slide-id="${slideId}"]`);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function ensure() {
+        if (!Array.isArray(state.slides) || !state.slides.length) state.slides = defaults().slides;
+        if (!slideById(state.selectedSlideId)) state.selectedSlideId = state.slides[0].id;
+        if (!slideById(state.activeSlideId)) state.activeSlideId = state.selectedSlideId;
+
+        const slide = currentSlide();
+        if (!slide || !slide.blocks.length) {
+          state.selectedBlockId = null;
+          return;
+        }
+        if (!slide.blocks.some((b) => b.id === state.selectedBlockId)) {
+          state.selectedBlockId = slide.blocks[0].id;
+        }
+      }
+
+      function currentSlide() { return slideById(state.selectedSlideId); }
+      function currentBlock() { return currentSlide()?.blocks.find((b) => b.id === state.selectedBlockId) || null; }
+      function slideById(id) { return state.slides.find((s) => s.id === id) || null; }
+      function blockElement(slideId, blockId) { return refs.deck.querySelector(`.slide-block[data-slide-id="${slideId}"][data-block-id="${blockId}"]`); }
+      function preview(text, i) {
+        const t = (text || "").replace(/\s+/g, " ").trim();
+        if (!t) return `Entry ${i + 1}`;
+        return t.length > 38 ? `${t.slice(0, 35)}...` : t;
+      }
+      function uid(prefix) { return `${prefix}-${Math.random().toString(36).slice(2, 9)}`; }
+      function num(value, fallback) { const n = Number(value); return Number.isFinite(n) ? n : fallback; }
+      function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+    })();
+  </script>
+</body>
+</html>
